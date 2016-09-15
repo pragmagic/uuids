@@ -1,4 +1,5 @@
 import strutils, hashes
+import isaac
 import urandom
 
 type
@@ -39,13 +40,16 @@ proc `==`*(x, y: UUID): bool =
   ## Returns ``true`` when the specified UUIDs are equal, ``false`` otherwise.
   x.mostSigBits == y.mostSigBits and x.leastSigBits == y.leastSigBits
 
+var rand {.threadvar.}: IsaacGenerator
 proc genUUID*(): UUID =
   ## Returns a random (v4) UUID.
-  ## Uses random values obtained from system source (e.g. urandom).
-  ## In the future this will use a cryptographically secure PRNG for efficiency.
-  var randBytes: array[16, uint8] = urandom(16)
-  copyMem(addr result.mostSigBits, addr randBytes[0], 8)
-  copyMem(addr result.leastSigBits, addr randBytes[8], 8)
+  ## Uses a thread-local cryptographically secure PRNG (ISAAC) seeded with
+  ## true random values obtained from OS.
+  if rand == nil:
+    var seed = cast[array[256, uint32]](urandom(1024))
+    rand = newIsaacGenerator(seed)
+  result.mostSigBits = cast[int64]((rand.nextU32().uint64 shl 32) or rand.nextU32())
+  result.leastSigBits = cast[int64]((rand.nextU32().uint64 shl 32) or rand.nextU32())
 
   # set version to 4
   result.mostSigBits = (result.mostSigBits and 0xFFFFFFFFFFFF0FFF'i64) or
