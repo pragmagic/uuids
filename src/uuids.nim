@@ -54,7 +54,7 @@ proc genUUID*(): UUID =
   result.leastSigBits = (result.leastSigBits and 0x3FFFFFFFFFFFFFFF'i64) or
                         0x8000000000004000'i64
 
-proc toUUID*(s: string): UUID {.raises: [ValueError].} =
+proc parseUUID*(s: string): UUID {.raises: [ValueError].} =
   ## Converts string representation of an UUID to UUID object.
   ## Raises ``ValueError`` if invalid format is provided.
   let parts = s.split('-')
@@ -79,5 +79,5 @@ when isMainModule:
   assert(uuidStr.len == 36)
   assert(uuidStr[14] == '4') # version
   assert(uuidStr[19] in {'8', '9', 'a', 'b'}) # variant (2 bits)
-  assert(uuidStr.toUUID() == uuid)
-  assert(uuidStr.toUUID().hash() == uuid.hash())
+  assert(uuidStr.parseUUID() == uuid)
+  assert(uuidStr.parseUUID().hash() == uuid.hash())

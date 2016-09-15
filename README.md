@@ -21,7 +21,7 @@ proc genUUID*(): UUID =
   ## Uses random values obtained from system source (e.g. urandom).
   ## In the future this will use a cryptographically secure PRNG for efficiency.
 
-proc toUUID*(s: string): UUID {.raises: [ValueError].}
+proc parseUUID*(s: string): UUID {.raises: [ValueError].}
   ## Converts string representation of an UUID to UUID object.
   ## Raises ValueError if invalid format is provided.
 ```
