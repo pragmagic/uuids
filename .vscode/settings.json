@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    "**/nimcache/**": true
+  },
+  "files.trimTrailingWhitespace": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.rulers": [80],
+  "editor.renderIndentGuides": true,
+  "files.autoSave": "afterDelay",
+  "nim.licenseString": "# Copyright 2016 Xored Software, Inc.\n\n",
+  "nim.buildOnSave": false,
+  "nim.lintOnSave": true,
+  "nim.project": ["uuids.nim"]
+}
