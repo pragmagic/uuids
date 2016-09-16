@@ -56,7 +56,7 @@ proc genUUID*(): UUID =
                        0x0000000000004000'i64
   # set IETF variant
   result.leastSigBits = (result.leastSigBits and 0x3FFFFFFFFFFFFFFF'i64) or
-                        0x8000000000004000'i64
+                        0x8000000000000000'i64
 
 proc parseUUID*(s: string): UUID {.raises: [ValueError].} =
   ## Converts string representation of an UUID to UUID object.
