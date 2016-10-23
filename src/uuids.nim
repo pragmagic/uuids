@@ -40,6 +40,10 @@ proc `==`*(x, y: UUID): bool =
   ## Returns ``true`` when the specified UUIDs are equal, ``false`` otherwise.
   x.mostSigBits == y.mostSigBits and x.leastSigBits == y.leastSigBits
 
+proc isZero*(uuid: UUID): bool =
+  ## Returns ``true`` when the UUID is zero (not set), ``false`` otherwise.
+  uuid.mostSigBits == 0'i64 and uuid.leastSigBits == 0'i64
+
 var rand {.threadvar.}: IsaacGenerator
 proc genUUID*(): UUID =
   ## Returns a random (v4) UUID.
@@ -78,7 +82,9 @@ proc parseUUID*(s: string): UUID {.raises: [ValueError].} =
   result = UUID(mostSigBits: mostSigBits, leastSigBits: leastSigBits)
 
 when isMainModule:
-  let uuid = genUUID()
+  var uuid: UUID
+  assert(uuid.isZero())
+  uuid = genUUID()
   let uuidStr = $uuid
   assert(uuidStr.len == 36)
   assert(uuidStr[14] == '4') # version

@@ -16,6 +16,9 @@ proc hash*(uuid: UUID): Hash
 proc `==`*(x, y: UUID): bool
   ## Returns true when the specified UUIDs are equal, false otherwise.
 
+proc isZero*(uuid: UUID): bool
+  ## Returns ``true`` when the UUID is zero (not set), ``false`` otherwise.
+
 proc genUUID*(): UUID =
   ## Returns a random (v4) UUID.
   ## Uses a thread-local cryptographically secure PRNG (ISAAC) seeded with
