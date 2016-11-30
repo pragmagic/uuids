@@ -5,8 +5,8 @@ when defined(windows):
 
   type ULONG_PTR = int
   type HCRYPTPROV = ULONG_PTR
-  var PROV_RSA_FULL {.importc, header: "<windows.h>".}: DWORD
-  var CRYPT_VERIFYCONTEXT {.importc, header: "<windows.h>".}: DWORD
+  var PROV_RSA_FULL {.importc, header: "<wincrypt.h>".}: DWORD
+  var CRYPT_VERIFYCONTEXT {.importc, header: "<wincrypt.h>".}: DWORD
 
   {.push, stdcall, dynlib: "Advapi32.dll".}
 
