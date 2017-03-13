@@ -7,4 +7,4 @@ license: "MIT"
 srcDir: "src"
 
 [Deps]
-requires: "isaac >= 0.1.0"
+requires: "isaac >= 0.1.2"
