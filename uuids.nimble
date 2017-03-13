@@ -1,6 +1,6 @@
 [Package]
 name: "uuids"
-version: "0.1.4"
+version: "0.1.5"
 author: "Xored Software, Inc."
 description: "UUID library"
 license: "MIT"
