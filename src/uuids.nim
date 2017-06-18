@@ -18,6 +18,21 @@ template toHex(s: string, start: Natural,
     # handle negative overflow
     if n == 0 and x < 0: n = -1
 
+proc uuidsParseHexInt(s: string, maxLen: int): int64 =
+  if s.isNil or s.len == 0:
+    raise newException(ValueError, "UUID part is empty")
+  if s.len > maxLen or s.len > sizeof(result) * 2:
+    raise newException(ValueError, "UUID part is longer than expected")
+  for c in s:
+    case c
+    of '0'..'9':
+      result = result shl 4 or (ord(c) - ord('0'))
+    of 'a'..'f':
+      result = result shl 4 or (ord(c) - ord('a') + 10)
+    of 'A'..'F':
+      result = result shl 4 or (ord(c) - ord('A') + 10)
+    else: raise newException(ValueError, "Invalid hex string: " & s)
+
 proc `$`*(uuid: UUID): string =
   ## Returns a string representation of the UUID in canonical form.
   result = newString(36)
@@ -69,25 +84,26 @@ proc parseUUID*(s: string): UUID {.raises: [ValueError].} =
   if parts.len != 5:
     raise newException(ValueError,
                        "UUID must consist of 5 parts separated with `-`")
-  var mostSigBits: int64 = parseHexInt(parts[0])
+  var mostSigBits: int64 = uuidsParseHexInt(parts[0], 8)
   mostSigBits = mostSigBits shl 16
-  mostSigBits = mostSigBits or parseHexInt(parts[1])
+  mostSigBits = mostSigBits or uuidsParseHexInt(parts[1], 4)
   mostSigBits = mostSigBits shl 16
-  mostSigBits = mostSigBits or parseHexInt(parts[2])
+  mostSigBits = mostSigBits or uuidsParseHexInt(parts[2], 4)
 
-  var leastSigBits: int64 = parseHexInt(parts[3])
+  var leastSigBits: int64 = uuidsParseHexInt(parts[3], 4)
   leastSigBits = leastSigBits shl 48
-  leastSigBits = leastSigBits or parseHexInt(parts[4])
+  leastSigBits = leastSigBits or uuidsParseHexInt(parts[4], 12)
 
   result = UUID(mostSigBits: mostSigBits, leastSigBits: leastSigBits)
 
 when isMainModule:
   var uuid: UUID
   assert(uuid.isZero())
-  uuid = genUUID()
-  let uuidStr = $uuid
-  assert(uuidStr.len == 36)
-  assert(uuidStr[14] == '4') # version
-  assert(uuidStr[19] in {'8', '9', 'a', 'b'}) # variant (2 bits)
-  assert(uuidStr.parseUUID() == uuid)
-  assert(uuidStr.parseUUID().hash() == uuid.hash())
+  for i in 1..100:
+    uuid = genUUID()
+    let uuidStr = $uuid
+    assert(uuidStr.len == 36)
+    assert(uuidStr[14] == '4') # version
+    assert(uuidStr[19] in {'8', '9', 'a', 'b'}) # variant (2 bits)
+    assert(uuidStr.parseUUID() == uuid)
+    assert(uuidStr.parseUUID().hash() == uuid.hash())
