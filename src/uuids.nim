@@ -33,8 +33,21 @@ proc uuidsParseHexInt(s: string, maxLen: int): int64 =
       result = result shl 4 or (ord(c) - ord('A') + 10)
     else: raise newException(ValueError, "Invalid hex string: " & s)
 
+proc initUUID*(mostSigBits, leastSigBits: int64): UUID =
+  ## Initializes UUID with the specified most and least significant bits
+  result.mostSigBits = mostSigBits
+  result.leastSigBits = leastSigBits
+
+proc leastSigBits*(uuid: UUID): int64 {.inline.} =
+  ## Returns 64 least significant bits of the ``uuid``
+  uuid.leastSigBits
+
+proc mostSigBits*(uuid: UUID): int64 {.inline.} =
+  ## Returns 64 most significant bits of the ``uuid``
+  uuid.mostSigBits
+
 proc `$`*(uuid: UUID): string =
-  ## Returns a string representation of the UUID in canonical form.
+  ## Returns a string representation of the ``uuid`` in canonical form.
   result = newString(36)
   toHex(result, 0, uuid.mostSigBits shr 32, 8)
   result[8] = '-'
@@ -47,7 +60,7 @@ proc `$`*(uuid: UUID): string =
   toHex(result, 24, uuid.leastSigBits, 12)
 
 proc hash*(uuid: UUID): Hash =
-  ## Computes hash of the specified UUID.
+  ## Computes hash of the specified ``uuid``.
   result = uuid.mostSigBits.hash() !& uuid.leastSigBits.hash()
   result = !$result
 
@@ -56,7 +69,7 @@ proc `==`*(x, y: UUID): bool =
   x.mostSigBits == y.mostSigBits and x.leastSigBits == y.leastSigBits
 
 proc isZero*(uuid: UUID): bool =
-  ## Returns ``true`` when the UUID is zero (not set), ``false`` otherwise.
+  ## Returns ``true`` when the ``uuid`` is zero (not set), ``false`` otherwise.
   uuid.mostSigBits == 0'i64 and uuid.leastSigBits == 0'i64
 
 var rand {.threadvar.}: IsaacGenerator
@@ -105,5 +118,15 @@ when isMainModule:
     assert(uuidStr.len == 36)
     assert(uuidStr[14] == '4') # version
     assert(uuidStr[19] in {'8', '9', 'a', 'b'}) # variant (2 bits)
-    assert(uuidStr.parseUUID() == uuid)
-    assert(uuidStr.parseUUID().hash() == uuid.hash())
+
+    let parsedUUID = uuidStr.parseUUID()
+    assert(parsedUUID == uuid)
+    assert(parsedUUID.hash() == uuid.hash())
+    assert(mostSigBits(parsedUUID) == mostSigBits(uuid))
+    assert(leastSigBits(parsedUUID) == leastSigBits(uuid))
+
+    let newUUID = initUUID(mostSigBits(uuid), leastSigBits(uuid))
+    assert(newUUID == uuid)
+    assert(newUUID.hash() == uuid.hash())
+    assert(mostSigBits(newUUID) == mostSigBits(uuid))
+    assert(leastSigBits(newUUID) == leastSigBits(uuid))

@@ -7,19 +7,28 @@ API:
 type UUID* = object
   ## 128-bit UUID compliant with RFC-4122
 
+proc initUUID*(mostSigBits, leastSigBits: int64): UUID =
+  ## Initializes UUID with the specified most and least significant bits
+
+proc leastSigBits*(uuid: UUID): int64 {.inline.}
+  ## Returns 64 least significant bits of the ``uuid``
+
+proc mostSigBits*(uuid: UUID): int64 {.inline.}
+  ## Returns 64 most significant bits of the ``uuid``
+
 proc `$`*(uuid: UUID): string
-  ## Returns a string representation of the UUID in canonical form.
+  ## Returns a string representation of the ``uuid`` in canonical form.
 
 proc hash*(uuid: UUID): Hash
-  ## Computes hash of the specified UUID.
+  ## Computes hash of the specified ``uuid``.
 
 proc `==`*(x, y: UUID): bool
   ## Returns true when the specified UUIDs are equal, false otherwise.
 
 proc isZero*(uuid: UUID): bool
-  ## Returns ``true`` when the UUID is zero (not set), ``false`` otherwise.
+  ## Returns ``true`` when the ``uuid`` is zero (not set), ``false`` otherwise.
 
-proc genUUID*(): UUID =
+proc genUUID*(): UUID
   ## Returns a random (v4) UUID.
   ## Uses a thread-local cryptographically secure PRNG (ISAAC) seeded with
   ## true random values obtained from OS.
