@@ -10,10 +10,11 @@ type
 
 template toHex(s: string, start: Natural,
                x: BiggestInt, len: Positive) =
-  const HexChars = "0123456789abcdef"
+  const HexChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8',
+                    '9', 'a', 'b', 'c', 'd', 'e', 'f']
   var n = x
   for j in countdown(len - 1, 0):
-    s[start + j] = HexChars[n and 0xF]
+    s[start + j] = HexChars[int(n and 0xF)]
     n = n shr 4
     # handle negative overflow
     if n == 0 and x < 0: n = -1
