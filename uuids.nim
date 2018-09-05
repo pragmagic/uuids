@@ -1,6 +1,6 @@
 import strutils, hashes
 import isaac
-import urandom
+import uuids/urandom
 
 type
   UUID* = object
@@ -20,7 +20,7 @@ template toHex(s: string, start: Natural,
     if n == 0 and x < 0: n = -1
 
 proc uuidsParseHexInt(s: string, maxLen: int): int64 =
-  if s.isNil or s.len == 0:
+  if s.len == 0:
     raise newException(ValueError, "UUID part is empty")
   if s.len > maxLen or s.len > sizeof(result) * 2:
     raise newException(ValueError, "UUID part is longer than expected")
