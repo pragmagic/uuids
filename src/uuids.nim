@@ -1,6 +1,6 @@
 import strutils, hashes
 import isaac
-import uuids/urandom
+import uuidspkg/urandom
 
 type
   UUID* = object
