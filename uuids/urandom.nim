@@ -16,16 +16,16 @@ when defined(windows):
     proc CryptAcquireContext(
       phProv: ptr HCRYPTPROV, pszContainer: WideCString,
       pszProvider: WideCString, dwProvType: DWORD, dwFlags: DWORD
-    ): WinBool {.importc: "CryptAcquireContextW".}
+    ): WINBOOL {.importc: "CryptAcquireContextW".}
   else:
     proc CryptAcquireContext(
       phProv: ptr HCRYPTPROV, pszContainer: cstring, pszProvider: cstring,
       dwProvType: DWORD, dwFlags: DWORD
-    ): WinBool {.importc: "CryptAcquireContextA".}
+    ): WINBOOL {.importc: "CryptAcquireContextA".}
 
   proc CryptGenRandom(
     hProv: HCRYPTPROV, dwLen: DWORD, pbBuffer: pointer
-  ): WinBool {.importc: "CryptGenRandom".}
+  ): WINBOOL {.importc: "CryptGenRandom".}
 
   {.pop.}
 
