@@ -12,16 +12,10 @@ when defined(windows):
 
   {.push, stdcall, dynlib: "Advapi32.dll".}
 
-  when useWinUnicode:
-    proc CryptAcquireContext(
-      phProv: ptr HCRYPTPROV, pszContainer: WideCString,
-      pszProvider: WideCString, dwProvType: DWORD, dwFlags: DWORD
-    ): WINBOOL {.importc: "CryptAcquireContextW".}
-  else:
-    proc CryptAcquireContext(
-      phProv: ptr HCRYPTPROV, pszContainer: cstring, pszProvider: cstring,
-      dwProvType: DWORD, dwFlags: DWORD
-    ): WINBOOL {.importc: "CryptAcquireContextA".}
+  proc CryptAcquireContext(
+    phProv: ptr HCRYPTPROV, pszContainer: WideCString,
+    pszProvider: WideCString, dwProvType: DWORD, dwFlags: DWORD
+  ): WINBOOL {.importc: "CryptAcquireContextW".}
 
   proc CryptGenRandom(
     hProv: HCRYPTPROV, dwLen: DWORD, pbBuffer: pointer
