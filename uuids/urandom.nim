@@ -12,16 +12,22 @@ when defined(windows):
 
   {.push, stdcall, dynlib: "Advapi32.dll".}
 
-  when useWinUnicode:
+  when (NimMajor, NimMinor, NimPatch) < (2, 0, 0):
+    when useWinUnicode:
+      proc CryptAcquireContext(
+        phProv: ptr HCRYPTPROV, pszContainer: WideCString,
+        pszProvider: WideCString, dwProvType: DWORD, dwFlags: DWORD
+      ): WINBOOL {.importc: "CryptAcquireContextW".}
+    else:
+      proc CryptAcquireContext(
+        phProv: ptr HCRYPTPROV, pszContainer: cstring, pszProvider: cstring,
+        dwProvType: DWORD, dwFlags: DWORD
+      ): WINBOOL {.importc: "CryptAcquireContextA".}
+  else:
     proc CryptAcquireContext(
       phProv: ptr HCRYPTPROV, pszContainer: WideCString,
       pszProvider: WideCString, dwProvType: DWORD, dwFlags: DWORD
     ): WINBOOL {.importc: "CryptAcquireContextW".}
-  else:
-    proc CryptAcquireContext(
-      phProv: ptr HCRYPTPROV, pszContainer: cstring, pszProvider: cstring,
-      dwProvType: DWORD, dwFlags: DWORD
-    ): WINBOOL {.importc: "CryptAcquireContextA".}
 
   proc CryptGenRandom(
     hProv: HCRYPTPROV, dwLen: DWORD, pbBuffer: pointer
