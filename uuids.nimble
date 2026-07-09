@@ -1,9 +1,5 @@
-[Package]
-name: "uuids"
-version: "0.1.12"
-author: "Xored Software, Inc."
-description: "UUID library"
-license: "MIT"
-
-[Deps]
-requires: "isaac >= 0.1.3"
+version       = "0.1.12"
+author        = "Xored Software, Inc."
+description   = "UUID library"
+license       = "MIT"
+requires "https://github.com/pragmagic/isaac.git#ca0a1e25d1b55d06210d1368e688f1d32d5eac0b"
